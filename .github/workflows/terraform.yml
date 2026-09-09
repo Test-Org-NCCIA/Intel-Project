@@ -21,6 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+  - name: Show GitHub IDs
+    run: |
+      echo "Repository: $GITHUB_REPOSITORY"
+      echo "Ref: $GITHUB_REF"
+      echo "Event: $GITHUB_EVENT_NAME"
+      echo "Owner ID: ${{ github.event.repository.owner.id }}"
+      echo "Repository ID: ${{ github.event.repository.id }}"
+
+
+
       # 2. Authenticate to AWS using GitHub OIDC
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
