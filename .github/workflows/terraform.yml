@@ -1,45 +1,54 @@
-terraform:
-  name: Terraform
-  runs-on: ubuntu-latest
+name: Terraform
 
-  steps:
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
-    # 1. Download repository code
-    - name: Checkout
-      uses: actions/checkout@v6
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
 
-    # Show GitHub IDs
-    - name: Show GitHub IDs
-      run: |
-        echo "Repository: $GITHUB_REPOSITORY"
-        echo "Ref: $GITHUB_REF"
-        echo "Event: $GITHUB_EVENT_NAME"
-        echo "Owner ID: ${{ github.event.repository.owner.id }}"
-        echo "Repository ID: ${{ github.event.repository.id }}"
+    steps:
 
-    # 2. Authenticate to AWS using GitHub OIDC
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v6
-      with:
-        role-to-assume: arn:aws:iam::604842892210:role/GitHubActionsTerraformRole
-        aws-region: ap-southeast-2
+      # 1. Download repository code
+      - name: Checkout
+        uses: actions/checkout@v6
 
-    # 3. Verify AWS authentication
-    - name: Check AWS identity
-      run: aws sts get-caller-identity
+      # Show GitHub IDs
+      - name: Show GitHub IDs
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+          echo "Event: $GITHUB_EVENT_NAME"
+          echo "Owner ID: ${{ github.event.repository.owner.id }}"
+          echo "Repository ID: ${{ github.event.repository.id }}"
 
-    # 4. Install Terraform
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      # 2. Authenticate to AWS using GitHub OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::604842892210:role/GitHubActionsTerraformRole
+          aws-region: ap-southeast-2
 
-    # 5. Initialize Terraform
-    - name: Terraform Init
-      run: terraform init
+      # 3. Verify AWS authentication
+      - name: Check AWS identity
+        run: aws sts get-caller-identity
 
-    # 6. Validate Terraform
-    - name: Terraform Validate
-      run: terraform validate
+      # 4. Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    # 7. Create Terraform plan
-    - name: Terraform Plan
-      run: terraform plan
+      # 5. Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # 6. Validate Terraform
+      - name: Terraform Validate
+        run: terraform validate
+
+      # 7. Create Terraform plan
+      - name: Terraform Plan
+        run: terraform plan
