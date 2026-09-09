@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   terraform:
@@ -17,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # Show GitHub IDs
+      # 2. Show GitHub IDs
       - name: Show GitHub IDs
         run: |
           echo "Repository: $GITHUB_REPOSITORY"
@@ -26,29 +29,29 @@ jobs:
           echo "Owner ID: ${{ github.event.repository.owner.id }}"
           echo "Repository ID: ${{ github.event.repository.id }}"
 
-      # 2. Authenticate to AWS using GitHub OIDC
+      # 3. Authenticate to AWS using GitHub OIDC
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::604842892210:role/GitHubActionsTerraformRole
           aws-region: ap-southeast-2
 
-      # 3. Verify AWS authentication
+      # 4. Verify AWS authentication
       - name: Check AWS identity
         run: aws sts get-caller-identity
 
-      # 4. Install Terraform
+      # 5. Install Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # 5. Initialize Terraform
+      # 6. Initialize Terraform
       - name: Terraform Init
         run: terraform init
 
-      # 6. Validate Terraform
+      # 7. Validate Terraform
       - name: Terraform Validate
         run: terraform validate
 
-      # 7. Create Terraform plan
+      # 8. Create Terraform plan
       - name: Terraform Plan
         run: terraform plan
